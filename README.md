@@ -215,18 +215,6 @@ The held-out test set was not used for:
 
 Task-specific train, validation, and test sample counts are provided in the Supplementary Material.
 
-## Citation
-
-Citation information will be updated upon publication.
-
-```bibtex
-@article{yun2026clinicalad,
-  title={Interpretable Clinical Data Mining for Alzheimer's Disease Staging and MCI Progression Prediction},
-  author={Yun, Taehyeon and ...},
-  journal={Bioinformatics},
-  year={2026}
-}
-```
 
 ## License
 
