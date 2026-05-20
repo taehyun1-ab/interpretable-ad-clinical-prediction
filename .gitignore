@@ -1,0 +1,12 @@
+data/raw/
+data/processed/
+results/checkpoints/
+*.csv
+*.pkl
+*.pt
+*.pth
+*.xlsx
+__pycache__/
+.ipynb_checkpoints/
+wandb/
+.env
