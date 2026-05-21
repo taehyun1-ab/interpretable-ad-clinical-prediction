@@ -49,6 +49,7 @@ The positive class was defined as:
 │   └── 06_supplementary_analysis.ipynb
 └── results/
     └── README_results.md
+```
 
 ## Data Availability
 
@@ -71,7 +72,7 @@ Example columns:
 RID, VISCODE, DIAGNOSIS, DIAGNOSIS2, AGE, PTGENDER, PTEDUCAT, APOE4COUNT, MMSCORE, ADNI_MEM, ADNI_EF, FAQFORM, FAQSHOP, ...
 ```
 
-For the primary ADNI experiments, baseline clinical variables were used.
+For the primary ADNI experiments, baseline clinical variables were used. The full variable list is provided in Supplementary Table S1.
 
 For AIBL external validation, a reduced shared-variable setting was used because not all ADNI variables were consistently available in AIBL. The shared-variable model used:
 
@@ -232,6 +233,7 @@ Expected outputs:
 ```text
 results/threshold_sensitivity.csv
 results/random_seed_robustness.csv
+results/extended_prior_study_comparison.csv
 results/tsne_latent_space.png
 results/umap_latent_space.png
 ```
