@@ -49,7 +49,6 @@ The positive class was defined as:
 │   └── 06_supplementary_analysis.ipynb
 └── results/
     └── README_results.md
-```
 
 ## Data Availability
 
