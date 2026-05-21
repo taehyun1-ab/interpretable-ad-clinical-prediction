@@ -4,7 +4,7 @@ Code for interpretable clinical data mining for Alzheimer's disease staging and 
 
 ## Overview
 
-This repository contains the source code and experimental configuration files for the study:
+This repository contains the experimental code for the study:
 
 **Interpretable Clinical Data Mining for Alzheimer's Disease Staging and MCI Progression Prediction**
 
@@ -13,11 +13,11 @@ The proposed framework uses baseline clinical variables from ADNI to perform Alz
 - feature-wise tokenization
 - token-wise supervised autoencoder bottleneck
 - Transformer-based feature interaction modeling
-- interpretable feature-level analyses
+- feature-level interpretation
 
 ## Prediction Tasks
 
-The framework was evaluated on four binary classification tasks:
+The model was evaluated on four binary classification tasks:
 
 - AD vs. CN
 - AD vs. MCI
@@ -36,25 +36,19 @@ The positive class was defined as:
 ```text
 .
 ├── README.md
-├── requirements.txt
-├── configs/
-│   ├── config_ad_vs_cn.yaml
-│   ├── config_ad_vs_mci.yaml
-│   ├── config_aibl_shared.yaml
-│   ├── config_mci_vs_cn.yaml
-│   └── config_pmci_vs_smci.yaml
+├── LICENSE
+├── .gitignore
 ├── data/
 │   └── README_data.md
-├── results/
-│   └── README_results.md
-└── src/
-    ├── dataset.py
-    ├── evaluate.py
-    ├── evaluate_external.py
-    ├── interpret.py
-    ├── model.py
-    ├── preprocessing.py
-    └── train.py
+├── notebooks/
+│   ├── 01_preprocessing.ipynb
+│   ├── 02_model_training.ipynb
+│   ├── 03_internal_validation.ipynb
+│   ├── 04_external_validation.ipynb
+│   ├── 05_interpretability.ipynb
+│   └── 06_supplementary_analysis.ipynb
+└── results/
+    └── README_results.md
 ```
 
 ## Data Availability
@@ -66,96 +60,93 @@ The raw clinical data used in this study were obtained from:
 
 Due to data use agreements, raw ADNI and AIBL data are not distributed with this repository. Users must request access from the official ADNI and AIBL data portals.
 
-This repository provides:
+This repository provides the analysis code, preprocessing workflow, model training procedure, validation scripts, and interpretation notebooks.
 
-- preprocessing scripts
-- task definition procedures
-- model training code
-- evaluation code
-- interpretation analysis code
-- experimental configuration files
+## Input Data Format
 
-## Input Format
-
-After preprocessing, each task-specific input file should be formatted as a CSV file.
+The expected input is a preprocessed or harmonized clinical dataframe containing participant identifiers, diagnostic labels, and baseline clinical variables.
 
 Example columns:
 
 ```text
-RID, VISCODE, label, AGE, PTGENDER, PTEDUCAT, APOE4COUNT, MMSCORE, ADNI_MEM, ADNI_EF, FAQFORM, FAQSHOP, ...
+RID, VISCODE, DIAGNOSIS, DIAGNOSIS2, AGE, PTGENDER, PTEDUCAT, APOE4COUNT, MMSCORE, ADNI_MEM, ADNI_EF, FAQFORM, FAQSHOP, ...
 ```
 
-Required columns:
+For the primary ADNI experiments, baseline clinical variables were used.
 
-- `RID`: participant identifier
-- `VISCODE`: visit code
-- `label`: binary task label
-- clinical feature columns used for model training
-
-For AIBL external validation, the shared-variable model used:
+For AIBL external validation, a reduced shared-variable setting was used because not all ADNI variables were consistently available in AIBL. The shared-variable model used:
 
 - APOE ε4 count
 - MMSE score
 - age
 - CDR global score
 
-## Compatibility
+## Notebook Workflow
 
-The experiments were conducted using:
+Open and run the notebooks in order.
 
-- Python 3.10
-- PyTorch
-- scikit-learn
-- XGBoost
-- SHAP
-- pandas
-- NumPy
+### 1. Data preprocessing
 
-Install dependencies with:
-
-```bash
-pip install -r requirements.txt
+```text
+notebooks/01_preprocessing.ipynb
 ```
 
-## How to Preprocess Data
+This notebook prepares task-specific train/test files from the baseline ADNI clinical dataframe.
 
-To preprocess the ADNI baseline clinical data:
+Main steps:
 
-```bash
-python src/preprocessing.py \
-  --input data/raw/adni_clinical.csv \
-  --output data/processed/adni_baseline_features.csv
+- load the baseline clinical dataframe
+- define binary classification tasks
+- create a shared stratified train/test split
+- construct task-specific labels
+- encode categorical variables using training-derived mappings
+- convert numeric variables and handle missing values
+- save processed train/test files for each task
+- save task-wise sample count summary
+
+Expected outputs:
+
+```text
+data/processed/AD_vs_CN_train.csv
+data/processed/AD_vs_CN_test.csv
+data/processed/AD_vs_MCI_train.csv
+data/processed/AD_vs_MCI_test.csv
+data/processed/MCI_vs_CN_train.csv
+data/processed/MCI_vs_CN_test.csv
+data/processed/pMCI_vs_sMCI_train.csv
+data/processed/pMCI_vs_sMCI_test.csv
+data/splits/task_split_summary.csv
 ```
 
-The preprocessing pipeline includes:
+### 2. Model training
 
-- baseline visit filtering
-- task-specific label construction
-- categorical encoding
-- missing value handling
-- z-score normalization fitted only on the training set
-- task-specific train/test split generation
-
-## How to Train the Model
-
-Example: train the model for the pMCI vs. sMCI task.
-
-```bash
-python src/train.py \
-  --config configs/config_pmci_vs_smci.yaml
+```text
+notebooks/02_model_training.ipynb
 ```
 
-Hyperparameter tuning was performed only on the pMCI vs. sMCI task using stratified five-fold cross-validation and Bayesian optimization. The selected configuration was reused for the remaining binary classification tasks.
+This notebook trains the proposed token-wise supervised autoencoder with Transformer-based feature interaction modeling.
 
-## How to Evaluate the Model
+Main steps:
 
-To evaluate a trained model on the held-out ADNI test set:
+- load processed task-specific train/test files
+- define model hyperparameters
+- define Dataset and DataLoader
+- define feature-wise tokenizer
+- define token-wise autoencoder bottleneck
+- define Transformer encoder and classification head
+- train the model using an internal validation split
+- apply early stopping based on validation AUC
+- save trained model checkpoints
 
-```bash
-python src/evaluate.py \
-  --config configs/config_pmci_vs_smci.yaml \
-  --checkpoint results/checkpoints/pmci_vs_smci_best.pt
+The selected hyperparameter configuration was obtained from the pMCI vs. sMCI task and reused for the remaining binary classification tasks.
+
+### 3. Internal validation
+
+```text
+notebooks/03_internal_validation.ipynb
 ```
+
+This notebook evaluates the trained models on the held-out ADNI test set.
 
 Reported metrics include:
 
@@ -166,15 +157,20 @@ Reported metrics include:
 - specificity
 - F1-score
 
-## External Validation
+Expected outputs:
 
-External validation was performed on AIBL using shared clinical variables available in both ADNI and AIBL.
-
-```bash
-python src/evaluate_external.py \
-  --config configs/config_aibl_shared.yaml \
-  --checkpoint results/checkpoints/shared_variable_model.pt
+```text
+results/internal_test_results.csv
+results/internal_roc_curves.png
 ```
+
+### 4. External validation
+
+```text
+notebooks/04_external_validation.ipynb
+```
+
+This notebook performs external validation on AIBL using shared clinical variables available in both ADNI and AIBL.
 
 AIBL samples were not used for:
 
@@ -184,9 +180,21 @@ AIBL samples were not used for:
 - early stopping
 - model selection
 
-## Model Interpretation
+Expected output:
 
-Interpretability analyses include:
+```text
+results/external_aibl_results.csv
+```
+
+### 5. Interpretability analysis
+
+```text
+notebooks/05_interpretability.ipynb
+```
+
+This notebook performs feature-level interpretation analyses.
+
+Main analyses:
 
 - feature ablation
 - permutation analysis
@@ -194,13 +202,39 @@ Interpretability analyses include:
 - SHAP local explanation
 - attention heatmap visualization
 
-Example: run SHAP analysis for pMCI vs. sMCI.
+Expected outputs:
 
-```bash
-python src/interpret.py \
-  --config configs/config_pmci_vs_smci.yaml \
-  --checkpoint results/checkpoints/pmci_vs_smci_best.pt \
-  --method shap
+```text
+results/feature_ablation_results.csv
+results/permutation_results.csv
+results/shap_summary_pmci_vs_smci.png
+results/shap_local_examples.png
+results/attention_heatmaps.png
+```
+
+### 6. Supplementary analysis
+
+```text
+notebooks/06_supplementary_analysis.ipynb
+```
+
+This notebook generates additional analyses used in the Supplementary Material.
+
+Main analyses:
+
+- threshold sensitivity analysis
+- random seed robustness analysis
+- t-SNE latent-space visualization
+- UMAP latent-space visualization
+- extended comparison tables
+
+Expected outputs:
+
+```text
+results/threshold_sensitivity.csv
+results/random_seed_robustness.csv
+results/tsne_latent_space.png
+results/umap_latent_space.png
 ```
 
 ## Reproducibility
@@ -213,12 +247,13 @@ The held-out test set was not used for:
 - early stopping
 - model selection
 
-Task-specific train, validation, and test sample counts are provided in the Supplementary Material.
+Categorical mappings were derived only from the training subset. Continuous variables were standardized using training-derived statistics and then applied to validation and test sets.
 
+Task-specific train, validation, and test sample counts are reported in the Supplementary Material.
 
 ## License
 
-This repository is released under the MIT License.
+This repository is released under the MIT License. See the `LICENSE` file for details.
 
 This license applies only to the source code and does not apply to the ADNI or AIBL datasets.
 
