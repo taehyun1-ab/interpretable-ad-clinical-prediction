@@ -1,12 +1,29 @@
+# Raw and processed data
 data/raw/
 data/processed/
+data/splits/
+
+# Model checkpoints and generated results
 results/checkpoints/
+results/figures/
+results/supplementary/
+
+# Generated files
 *.csv
 *.pkl
 *.pt
 *.pth
 *.xlsx
+*.png
+*.jpg
+*.jpeg
+
+# Python and notebook cache
 __pycache__/
 .ipynb_checkpoints/
+
+# Experiment tracking
 wandb/
+
+# Environment files
 .env
