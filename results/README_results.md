@@ -15,6 +15,8 @@ results/
 ├── training_history.csv
 ├── external_aibl_results.csv
 ├── shared_variable_validation_summary.csv
+├── shap_global_importance_pMCI_vs_sMCI.csv
+├── shap_local_examples_pMCI_vs_sMCI.csv
 ├── checkpoints/
 │   ├── AD_vs_CN_best.pt
 │   ├── AD_vs_MCI_best.pt
