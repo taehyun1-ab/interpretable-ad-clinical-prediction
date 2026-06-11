@@ -53,7 +53,7 @@ The positive class was defined as:
     └── README_results.md
 ```
 
-## Repository Structure
+## Installation
 Install the required Python packages using:
 pip install -r requirements.txt
 
