@@ -6,4 +6,4 @@ torch
 shap
 umap-learn
 jupyter
-ipykerne
+ipykernel
