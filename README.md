@@ -39,7 +39,10 @@ The positive class was defined as:
 ├── LICENSE
 ├── .gitignore
 ├── data/
-│   └── README_data.md
+│   ├── README_data.md
+│   └── sample/
+│       ├── ADNI_clinical_sample_data.csv
+│       └── AIBL_clinical_sample_data.csv
 ├── notebooks/
 │   ├── 01_preprocessing.ipynb
 │   ├── 02_model_training_and_internal_validation.ipynb
@@ -49,6 +52,10 @@ The positive class was defined as:
 └── results/
     └── README_results.md
 ```
+
+## Repository Structure
+Install the required Python packages using:
+pip install -r requirements.txt
 
 ## Data Availability
 
@@ -60,6 +67,20 @@ The raw clinical data used in this study were obtained from:
 Due to data use agreements, raw ADNI and AIBL data are not distributed with this repository. Users must request access from the official ADNI and AIBL data portals.
 
 This repository provides the analysis code, preprocessing workflow, model training and validation procedures, interpretation analysis, and supplementary analysis notebooks.
+
+## Synthetic Sample Data
+The `data/sample/` directory contains synthetic CSV files that illustrate the expected raw input format:
+
+data/sample/ADNI_clinical_sample_data.csv
+data/sample/AIBL_clinical_sample_data.csv
+
+These files do not contain real participant-level records from ADNI or AIBL All values are artificially generated for format inspection only.
+
+The synthetic sample files are not intended for model training, performance evaluation, or reproduction of the reported results. To reproduce the study results, users must obtain access to the original ADNI and AIBL data through the official data access procedures and prepare harmonized baseline clinical dataframes following the same structure.
+
+The ADNI sample file illustrates the full baseline clinical dataframe format used for the primary experiments. For shared-variable external validation, the four common variables (`AGE`, `APOE4COUNT`, `MMSCORE`, and `CDGLOBAL`) are selected from the same ADNI dataframe.
+
+The AIBL sample file illustrates the external validation input format containing diagnostic labels and shared clinical variables.
 
 ## Input Data Format
 
@@ -252,7 +273,6 @@ Categorical mappings were derived only from the training subset. Continuous vari
 
 AIBL samples were used only for external validation and were not used during training, validation, hyperparameter tuning, early stopping, or model selection.
 
-Task-specific train, validation, and test sample counts are reported in the Supplementary Material.
 
 ## Notes on Data and Results
 
