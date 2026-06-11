@@ -37,7 +37,7 @@ data/sample/ADNI_clinical_sample_data.csv
 data/sample/AIBL_clinical_sample_data.csv
 ```
 
-These files do not contain real participant-level records from ADNI or AIBL. ALL values are artifically generated for format inspection only.
+These files do not contain real participant-level records from ADNI or AIBL. All values are artifically generated for format inspection only.
 The synthetic sample files are not intended for model training, performance evaluation, end-to-end execution, or reproduction of the reported results.
 
 ## ADNI Sample File
